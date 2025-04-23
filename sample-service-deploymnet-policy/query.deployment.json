@@ -1,0 +1,183 @@
+{
+  "label": "${SERVICE_NAME} Deployment Policy",
+  "description": "Policy to auto deploy ${SERVICE_NAME}",
+  "service": {
+    "name": "${SERVICE_NAME}",
+    "org": "${HZN_ORG_ID}",
+    "arch": "*",
+    "serviceVersions": [
+      {
+        "version": "latest",
+        "priority": {
+          "priority_value": 1,
+          "retries": 2,
+          "retry_durations": 1800
+        }
+      }
+    ]
+  },
+  "properties": [],
+  "constraints": [
+    "purpose == edgelake",
+    "openhorizon.allowPrivileged == true"
+  ],
+  "userInput": [
+    {
+      "serviceOrgid": "${HZN_ORG_ID}",
+      "serviceUrl": "${SERVICE_NAME}",
+      "serviceVersionRange": "[0.0.0,INFINITY)",
+      "inputs": [
+        {
+          "name": "NODE_TYPE",
+          "label": "EdgeLake starts TCP and REST connection protocols",
+          "type": "string",
+          "value": "query"
+        },
+        {
+          "name": "NODE_NAME",
+          "label": "Name of the EdgeLake instance",
+          "type": "string",
+          "value": "edgelake-query"
+        },
+        {
+          "name": "COMPANY_NAME",
+          "label": "Owner of the EdgeLake instance",
+          "type": "string",
+          "value": "New Company"
+        },
+        {
+          "name": "DISABLE_CLI",
+          "label": "Disable AnyLog's CLI interface",
+          "type": "bool",
+          "value": true
+        },
+        {
+          "name": "ANYLOG_SERVER_PORT",
+          "label": "Port address used by EdgeLake's TCP protocol to communicate with other nodes in the network",
+          "type": "int",
+          "value": 32348
+        },
+        {
+          "name": "ANYLOG_REST_PORT",
+          "label": "Port address used by EdgeLake's REST protocol",
+          "type": "int",
+          "value": 32349
+        },
+        {
+          "name": "TCP_BIND",
+          "label": "A bool value that determines if to bind to a specific IP and Port (a false value binds to all IPs)",
+          "type": "bool",
+          "value": true
+        },
+        {
+          "name": "REST_BIND",
+          "label": "A bool value that determines if to bind to a specific IP and Port (a false value binds to all IPs)",
+          "type": "bool",
+          "value": true
+        },
+        {
+          "name": "DB_TYPE",
+          "label": "Physical database type (sqlite or psql)",
+          "type": "string",
+          "value": "sqlite"
+        },
+        {
+          "name": "DB_IP",
+          "label": "Database IP address",
+          "type": "string",
+          "value": "127.0.0.1"
+        },
+        {
+          "name": "DB_PORT",
+          "label": "Database port number",
+          "type": "int",
+          "value": 5432
+        },
+        {
+          "name": "AUTOCOMMIT",
+          "label": "Whether to set autocommit data",
+          "type": "bool",
+          "value": true
+        },
+        {
+          "name": "SYSTEM_QUERY",
+          "label": "Whether to start to start system_query logical database - by default this is true due to node type",
+          "type": "bool",
+          "value": true
+        },
+        {
+          "name": "MEMORY",
+          "label": "Run system_query using in-memory SQLite. If set to false, will use pre-set database type",
+          "type": "bool",
+          "value": true
+        },
+        {
+          "name": "BLOCKCHAIN_SYNC",
+          "label": "How often to sync from blockchain",
+          "type": "string",
+          "value": "30 second"
+        },
+        {
+          "name": "BLOCKCHAIN_SOURCE",
+          "label": "blockchain network to be used (ex. optimism)",
+          "type": "string",
+          "value": "master"
+        },
+        {
+          "name": "LEDGER_CONN",
+          "label": "TCP connection information for Master Node",
+          "type": "string",
+          "value": "127.0.0.1:32048"
+        },
+        {
+          "name": "MONITOR_NODES",
+          "label": "Whether to monitor the node or not",
+          "type": "bool",
+          "value": true
+        },
+        {
+          "name": "STORE_MONITORING",
+          "label": "Store monitoring in Operator node(s)",
+          "type": "bool",
+          "value": true
+        },
+        {
+          "name": "DEPLOY_LOCAL_SCRIPT",
+          "label": "Whether to automatically run a local (or personalized) script at the end of the process",
+          "type": "bool",
+          "value": true
+        },
+        {
+          "name": "DEBUG_MODE",
+          "label": "Run code in debug mode",
+          "type": "bool",
+          "value": true
+        },
+        {
+          "name": "ENABLE_NEBULA",
+          "label": "whether to enable Lighthouse",
+          "type": "bool",
+          "value": true
+        },
+        {
+          "name": "NEBULA_NEW_KEYS",
+          "label": "create new nebula keys",
+          "type": "bool",
+          "value": true
+        },
+        {
+          "name": "IS_LIGHTHOUSE",
+          "label": "whether node is type lighthouse",
+          "type": "bool",
+          "value": true
+        },
+        {
+          "name": "LIGHTHOUSE_NODE_IP",
+          "label": "External physical IP of the node associated with Nebula lighthouse",
+          "type": "string",
+          "value": "\""
+        }
+      ]
+    }
+  ]
+}

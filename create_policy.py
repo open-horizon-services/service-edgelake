@@ -66,19 +66,18 @@ def read_file(file_path):
                     elif isinstance(value, int):
                         val_type = 'int'
 
-
-
-            if key and value and description and val_type and value != '""':
-                user_input.append({
-                    "name": key,
-                    "label": description,
-                    "type":val_type,
-                    "value": value
-                })
-                key = ""
-                description = ""
-                value = ""
-                val_type = ""
+            if key != "REMOTE_CLI":
+                if key and value and description and val_type and value != '""':
+                    user_input.append({
+                        "name": key,
+                        "label": description,
+                        "type":val_type,
+                        "value": value if key != "DISABLE_CLI" else True
+                    })
+                    key = ""
+                    description = ""
+                    value = ""
+                    val_type = ""
 
     return user_input
 

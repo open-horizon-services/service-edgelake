@@ -1,6 +1,6 @@
 services:
   ${NODE_NAME}:
-    image: ${IMAGE}:${DOCKER_IMAGE_VERSION}
+    image: ${IMAGE}:${TAG}
     restart: always
     env_file:
       -  ../docker-makefiles/edgelake_${EDGELAKE_TYPE}.env
