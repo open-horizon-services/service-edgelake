@@ -54,19 +54,22 @@ up: ## start EdgeLake instance
 	@echo "Deploy EdgeLake $(EDGELAKE_TYPE)"
 	@$(MAKE) generate-docker-compose
 	@$(DOCKER_COMPOSE_CMD) -f docker-makefiles/docker-compose.yaml up -d
+	@rm -f docker-makefiles/docker-compose.yaml docker-makefiles/docker-compose-template.yaml
 down: ## Stop EdgeLAke instance
 	@echo "Stop EdgeLake $(EDGELAKE_TYPE)"
 	@$(MAKE) generate-docker-compose
 	@$(DOCKER_COMPOSE_CMD) -f docker-makefiles/docker-compose.yaml down
+	@rm -f docker-makefiles/docker-compose.yaml docker-makefiles/docker-compose-template.yaml
 clean-vols: ## Stop & remove volumes for EdgeLAke instance
 	@echo "Stop + remove volumes for EdgeLake $(EDGELAKE_TYPE)"
 	@$(MAKE) generate-docker-compose
 	@$(DOCKER_COMPOSE_CMD) -f docker-makefiles/docker-compose.yaml down -v
+	@rm -f docker-makefiles/docker-compose.yaml docker-makefiles/docker-compose-template.yaml
 clean: ## Stop AnyLog instance and remove associated volumes & image
 	@echo "Stop EdgeLake $(EDGELAKE_TYPE) & Remove Volumes and Images"
 	@$(MAKE) generate-docker-compose
 	@$(DOCKER_COMPOSE_CMD) -f docker-makefiles/docker-compose.yaml down --volumes --rmi all
-	@rm -f docker-makefiles/docker-compose.yaml
+	@rm -f docker-makefiles/docker-compose.yaml docker-makefiles/docker-compose-template.yaml
 
 attach: ## Attach to docker / podman container (use ctrl-d to detach)
 	@$(CONTAINER_CMD) attach --detach-keys=ctrl-d $(NODE_NAME)
@@ -107,13 +110,10 @@ help:
 		awk -F':|##' '{ printf "  \033[36m%-20s\033[0m %s\n", $$1, $$3 }'
 	@echo ""
 	@echo "Common variables you can override:"
-	@echo "  IS_MANUAL           Use manual deployment (true/false) - required to overwrite"
 	@echo "  EDGELAKE_TYPE         Type of node to deploy (e.g., master, operator)"
 	@echo "  DOCKER_IMAGE_VERSION  Docker image tag to use"
 	@echo "  NODE_NAME           Custom name for the container"
-	@echo "  CLUSTER_NAME		 Cluster Operator node is associted with"
 	@echo "  ANYLOG_SERVER_PORT  Port for server communication"
 	@echo "  ANYLOG_REST_PORT    Port for REST API"
 	@echo "  ANYLOG_BROKER_PORT  Optional broker port"
-	@echo "  LEDGER_CONN         Master node IP and port"
 	@echo "  TEST_CONN           REST connection information for testing network connectivity"
