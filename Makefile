@@ -59,24 +59,36 @@ generate-docker-compose:
 build: ## pull image from the docker hub repository
 	$(CONTAINER_CMD) pull docker.io/anylogco/edgelake:$(DOCKER_IMAGE_VERSION)
 dry-run: generate-docker-compose ## create docker-compose.yaml file based on the .env configuration file(s)
+	@echo "========================="
 	@echo "Dry Run $(EDGELAKE_TYPE)"
+	@echo "========================="
 up: ## start EdgeLake instance
+	@echo "========================="
 	@echo "Deploy EdgeLake $(EDGELAKE_TYPE)"
+	@echo "========================="
 	@$(MAKE) generate-docker-compose
 	@$(DOCKER_COMPOSE_CMD) -f docker-makefiles/docker-compose.yaml up -d
 	@rm -f docker-makefiles/docker-compose.yaml docker-makefiles/docker-compose-template.yaml
 down: ## Stop EdgeLAke instance
 	@echo "Stop EdgeLake $(EDGELAKE_TYPE)"
+	@echo "========================="
+	@echo "Stop EdgeLake $(EDGELAKE_TYPE)"
+	@echo "========================="
 	@$(MAKE) generate-docker-compose
 	@$(DOCKER_COMPOSE_CMD) -f docker-makefiles/docker-compose.yaml down
 	@rm -f docker-makefiles/docker-compose.yaml docker-makefiles/docker-compose-template.yaml
 clean-vols: ## Stop & remove volumes for EdgeLAke instance
+	@echo
+	@echo "==============================================="
 	@echo "Stop + remove volumes for EdgeLake $(EDGELAKE_TYPE)"
+	@echo "==============================================="
 	@$(MAKE) generate-docker-compose
 	@$(DOCKER_COMPOSE_CMD) -f docker-makefiles/docker-compose.yaml down -v
 	@rm -f docker-makefiles/docker-compose.yaml docker-makefiles/docker-compose-template.yaml
 clean: ## Stop AnyLog instance and remove associated volumes & image
+	@echo "=================================================="
 	@echo "Stop EdgeLake $(EDGELAKE_TYPE) & Remove Volumes and Images"
+	@echo "=================================================="
 	@$(MAKE) generate-docker-compose
 	@$(DOCKER_COMPOSE_CMD) -f docker-makefiles/docker-compose.yaml down --volumes --rmi all
 	@rm -f docker-makefiles/docker-compose.yaml docker-makefiles/docker-compose-template.yaml
