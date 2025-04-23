@@ -4,6 +4,10 @@
 SHELL := /bin/bash
 
 export EDGELAKE_TYPE ?= generic
+export HZN_ORG_ID ?= myorg
+export HZN_LISTEN_IP ?= 127.0.0.1
+export SERVICE_NAME ?= service-edgelake-$(EDGELAKE_TYPE)
+export SERVICE_VERSION ?= 1.3.5
 export TEST_CONN ?=
 
 # Detect OS type
@@ -23,7 +27,10 @@ ifneq ($(filter test-node test-network,$(MAKECMDGOALS)),test-node test-network)
 	export ANYLOG_BROKER_PORT := $(shell cat docker-makefiles/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_BROKER_PORT | awk -F "=" '{print $$2}' | grep -v '^$$')
 	export REMOTE_CLI := $(shell cat docker-makefiles/edgelake_${EDGELAKE_TYPE}.env | grep REMOTE_CLI | awk -F "=" '{print $$2}')
 	export ENABLE_NEBULA := $(shell cat docker-makefiles/edgelake_${EDGELAKE_TYPE}.env | grep ENABLE_NEBULA | awk -F "=" '{print $$2}')
-	export IMAGE := $(shell cat docker-makefiles/.env | grep IMAGE | awk -F "=" '{print $$2}')
+	export DOCKER_IMAGE_BASE ?= $(shell cat docker-makefiles/.env | grep IMAGE | awk -F "=" '{print $$2}')
+	export IMAGE_ORG ?= $(shell echo $(DOCKER_IMAGE_BASE) |  cut -d '/' -f 1)
+	export IMAGE_NAME ?= $(shell echo $(DOCKER_IMAGE_BASE) |  cut -d '/' -f 2)
+
 endif
 
 ifeq ($(OS),Linux)
@@ -37,19 +44,22 @@ export CONTAINER_CMD := $(shell if command -v podman >/dev/null 2>&1; then echo 
 export DOCKER_COMPOSE_CMD := $(shell if command -v podman-compose >/dev/null 2>&1; then echo "podman-compose"; \
 	elif command -v docker-compose >/dev/null 2>&1; then echo "docker-compose"; else echo "docker compose"; fi)
 
+export PYTHON_CMD := $(shell if command -v python3 >/dev/null 2>&1; then echo "python"; \
+	elif command -v python3 >/dev/null 2>&1; then echo "python3"; fi)
+
 all: help
+#======================================================================================================================#
+#  											Docker related commands													   #
+#======================================================================================================================#
 generate-docker-compose:
 	@bash docker-makefiles/update_docker_compose.sh
 	@NODE_NAME="$(NODE_NAME)" ANYLOG_SERVER_PORT=${ANYLOG_SERVER_PORT} ANYLOG_REST_PORT=${ANYLOG_REST_PORT} ANYLOG_BROKER_PORT=${ANYLOG_BROKER_PORT} \
 	REMOTE_CLI=$(REMOTE_CLI) ENABLE_NEBULA=$(ENABLE_NEBULA) \
 	envsubst < docker-makefiles/docker-compose-template.yaml > docker-makefiles/docker-compose.yaml
-
 build: ## pull image from the docker hub repository
 	$(CONTAINER_CMD) pull docker.io/anylogco/edgelake:$(DOCKER_IMAGE_VERSION)
-
 dry-run: generate-docker-compose ## create docker-compose.yaml file based on the .env configuration file(s)
 	@echo "Dry Run $(EDGELAKE_TYPE)"
-
 up: ## start EdgeLake instance
 	@echo "Deploy EdgeLake $(EDGELAKE_TYPE)"
 	@$(MAKE) generate-docker-compose
@@ -70,16 +80,54 @@ clean: ## Stop AnyLog instance and remove associated volumes & image
 	@$(MAKE) generate-docker-compose
 	@$(DOCKER_COMPOSE_CMD) -f docker-makefiles/docker-compose.yaml down --volumes --rmi all
 	@rm -f docker-makefiles/docker-compose.yaml docker-makefiles/docker-compose-template.yaml
-
 attach: ## Attach to docker / podman container (use ctrl-d to detach)
 	@$(CONTAINER_CMD) attach --detach-keys=ctrl-d $(NODE_NAME)
-
 exec: ## Attach to the shell executable for the container
 	@$(CONTAINER_CMD) exec -it $(NODE_NAME) /bin/bash
-
 logs: ## View container logs
 	@$(CONTAINER_CMD) logs $(NODE_NAME)
 
+#======================================================================================================================#
+#  										   OpenHorizon related commands											   	   #
+#======================================================================================================================#
+prep-service: ## prepare `service.deployment.json` file using python / python3
+	@$(PYTHON_CMD) create_policy.py $(DOCKER_IMAGE_BASE) docker-makefiles/edgelake_${EDGELAKE_TYPE}.env
+full-deploy: publish-service publish-service-policy  publish-deployment-policy agent-run ## deploy all services and policies, then start agent
+deploy: publish-deployment-policy agent-run ## publish deployment and run agent
+publish: publish-service publish-service-policy publish-deployment-policy ## publish services and policies
+publish-version: publish-service publish-service-policy ## update version
+publish-service: ## publish service
+	@echo "=================="
+	@echo "PUBLISHING SERVICE"
+	@echo "=================="
+	@hzn exchange service publish -O -P --json-file=service.definition.json
+publish-service-policy: ##  public service policy
+	@echo "========================="
+	@echo "PUBLISHING SERVICE POLICY"
+	@echo "========================="
+	@hzn exchange service addpolicy -f service.policy.json $(HZN_ORG_ID)/$(SERVICE_NAME)_$(SERVICE_VERSION)_$(ARCH)
+publish-deployment-policy: prep-service ## publish deployment policy
+	@echo "============================"
+	@echo "PUBLISHING DEPLOYMENT POLICY"
+	@echo "============================"
+	@hzn exchange deployment addpolicy -f deployment.policy.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
+agent-run: ## start agent
+	@echo "================"
+	@echo "REGISTERING NODE"
+	@echo "================"
+	@hzn register --policy=node.policy.json
+hzn-clean: ## unregister agent(s) from OpenHorizon
+	@echo "==================="
+	@echo "UN-REGISTERING NODE"
+	@echo "==================="
+	@hzn unregister -f
+	@echo ""
+hzn-logs: ## logs for Docker container when running in OpenHorizon
+	@$(CONTAINER_CMD) logs $(CONTAINER_ID)
+
+#======================================================================================================================#
+#  											Testing / Help related commands											   #
+#======================================================================================================================#
 test-node: ## Test a node via REST interface
 ifeq ($(TEST_CONN), )
 	@echo "Missing Connection information (Param Name: TEST_CONN)"
@@ -87,7 +135,6 @@ ifeq ($(TEST_CONN), )
 endif
 	@echo "Test Node against $(TEST_CONN)"
 	@curl -X GET http://$(TEST_CONN) -H "command: test node" -H "User-Agent: AnyLog/1.23" -w "\n"
-
 test-network: ## Test the network via REST interface
 ifeq ($(TEST_CONN), )
 	@echo "Missing Connection information (Param Name: TEST_CONN)"
@@ -96,6 +143,22 @@ endif
 	@echo "Test Network against $(TEST_CONN)"
 	@curl -X GET http://$(TEST_CONN) -H "command: test network" -H "User-Agent: AnyLog/1.23" -w "\n"
 check-vars: ## Show all environment variable values
+	@echo "====================="
+	@echo   "ENVIRONMENT VARIABLES"
+	@echo "====================="
+	@echo "EDGELAKE_TYPE          default: generic                               actual: $(EDGELAKE_TYPE)"
+	@echo "DOCKER_IMAGE_BASE      default: anylogco/edgelake                     actual: $(DOCKER_IMAGE_BASE)"
+	@echo "DOCKER_IMAGE_NAME      default: edgelake                              actual: $(IMAGE_NAME)"
+	@echo "DOCKER_IMAGE_VERSION   default: latest                                actual: $(DOCKER_IMAGE_VERSION)"
+	@echo "DOCKER_HUB_ID          default: anylogco                              actual: $(IMAGE_ORG)"
+	@echo "HZN_ORG_ID             default: myorg                                 actual: ${HZN_ORG_ID}"
+	@echo "HZN_LISTEN_IP          default: 127.0.0.1                             actual: ${HZN_LISTEN_IP}"
+	@echo "SERVICE_NAME                                                          actual: ${SERVICE_NAME}"
+	@echo "SERVICE_VERSION                                                       actual: ${SERVICE_VERSION}"
+	@echo "ARCH                   default: amd64                                 actual: ${ARCH}"
+	@echo "==================="
+	@echo "EDGELAKE DEFINITION"
+	@echo "==================="
 	@echo "EDGELAKE_TYPE         Default: generic            Value: $(EDGELAKE_TYPE)"
 	@echo "NODE_NAME             Default: edgelake-node      Value: $(NODE_NAME)"
 	@echo "DOCKER_IMAGE_VERSION  Default: latest             Value: $(DOCKER_IMAGE_VERSION)"

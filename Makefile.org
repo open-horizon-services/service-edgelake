@@ -74,7 +74,7 @@ dry-run: generate-docker-compose
 	@echo "Dry Run $(EDGELAKE_TYPE)"
 check:
 	@echo "====================="
-	@echo "ENVIRONMENT VARIABLES"
+	@echo   "ENVIRONMENT VARIABLES"
 	@echo "====================="
 	@echo "EDGELAKE_TYPE          default: generic                               actual: $(EDGELAKE_TYPE)"
 	@echo "DOCKER_IMAGE_BASE      default: anylogco/edgelake                     actual: $(IMAGE)"
