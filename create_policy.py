@@ -29,7 +29,7 @@ BASE_POLICY = {
         }
       },
       {
-        "version": "1.3.0",
+        "version": "${SERVICE_VERSION}",
         "priority": {
           "priority_value": 2,
           "retries": 2,
