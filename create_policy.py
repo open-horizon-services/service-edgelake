@@ -8,8 +8,10 @@ try:
 except NameError:
     FileNotFoundError = IOError
 
-ROOT_DIR = os.path.expanduser(os.path.expandvars(__file__)).split("create_policy.py")[0]
-FILE_PATH = os.path.join(ROOT_DIR, 'deployment.policy.json')
+ROOT_DIR = os.path.dirname(os.path.expanduser(os.path.expandvars(__file__)))
+FILE_PATH = os.path.join(ROOT_DIR, 'service.deployment.json')
+IGNORE_LIST = ["REMOTE_CLI", "ENABLE_NEBULA", "NEBULA_NEW_KEYS", "IS_LIGHTHOUSE", "CIDR_OVERLAY_ADDRESS",
+               "LIGHTHOUSE_IP", "LIGHTHOUSE_NODE_IP"]
 BASE_POLICY = {
   "label": "${SERVICE_NAME} Deployment Policy",
   "description": "Policy to auto deploy ${SERVICE_NAME}",
@@ -41,20 +43,23 @@ BASE_POLICY = {
     "purpose == edgelake",
     "openhorizon.allowPrivileged == true"
   ],
-  "userInput": [{
+  "userInput": [
+    {
       "serviceOrgid": "${HZN_ORG_ID}",
       "serviceUrl": "${SERVICE_NAME}",
       "serviceVersionRange": "[0.0.0,INFINITY)",
       "inputs": []
-    }]
+    }
+  ]
 }
-IGNORE_LIST = ["REMOTE_CLI", "ENABLE_NEBULA", "NEBULA_NEW_KEYS", "IS_LIGHTHOUSE", "CIDR_OVERLAY_ADDRESS",
-               "LIGHTHOUSE_IP", "LIGHTHOUSE_NODE_IP"]
 
 # read content from deployment.policy.json if exists
 if os.path.isfile(FILE_PATH):
-    with open(FILE_PATH, 'r') as f:
-        BASE_POLICY = json.load(f)
+    try:
+        with open(FILE_PATH, 'r') as f:
+            BASE_POLICY = json.load(f)
+    except:
+        pass
 
 
 def read_file(file_path):
@@ -104,7 +109,7 @@ def read_file(file_path):
                     if isinstance(value, str) and value.lower() in ['true', 'false']:
                         value = True if value.lower() == 'true' else False
 
-                    if key and value and description and val_type and value != '""': # set params + description in userInput list
+                    if key and value and description and value != '""': # set params + description in userInput list
                         user_input.append({
                             "name": key,
                             "label": description,

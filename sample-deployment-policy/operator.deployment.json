@@ -13,6 +13,14 @@
           "retries": 2,
           "retry_durations": 1800
         }
+      },
+      {
+        "version": "1.3.0",
+        "priority": {
+          "priority_value": 2,
+          "retries": 2,
+          "retry_durations": 1800
+        }
       }
     ]
   },
@@ -46,12 +54,6 @@
           "value": "New Company"
         },
         {
-          "name": "DISABLE_CLI",
-          "label": "Disable AnyLog's CLI interface",
-          "type": "bool",
-          "value": true
-        },
-        {
           "name": "ANYLOG_SERVER_PORT",
           "label": "Port address used by EdgeLake's TCP protocol to communicate with other nodes in the network",
           "type": "int",
@@ -62,24 +64,6 @@
           "label": "Port address used by EdgeLake's REST protocol",
           "type": "int",
           "value": 32149
-        },
-        {
-          "name": "TCP_BIND",
-          "label": "A bool value that determines if to bind to a specific IP and Port (a false value binds to all IPs)",
-          "type": "bool",
-          "value": true
-        },
-        {
-          "name": "REST_BIND",
-          "label": "A bool value that determines if to bind to a specific IP and Port (a false value binds to all IPs)",
-          "type": "bool",
-          "value": true
-        },
-        {
-          "name": "BROKER_BIND",
-          "label": "A bool value that determines if to bind to a specific IP and Port (a false value binds to all IPs)",
-          "type": "bool",
-          "value": true
         },
         {
           "name": "DB_TYPE",
@@ -100,36 +84,6 @@
           "value": 5432
         },
         {
-          "name": "AUTOCOMMIT",
-          "label": "Whether to set autocommit data",
-          "type": "bool",
-          "value": true
-        },
-        {
-          "name": "ENABLE_NOSQL",
-          "label": "Whether to enable NoSQL logical database",
-          "type": "bool",
-          "value": true
-        },
-        {
-          "name": "SYSTEM_QUERY",
-          "label": "Whether to start to start system_query logical database",
-          "type": "bool",
-          "value": true
-        },
-        {
-          "name": "MEMORY",
-          "label": "Run system_query using in-memory SQLite. If set to false, will use pre-set database type",
-          "type": "bool",
-          "value": true
-        },
-        {
-          "name": "ENABLE_NOSQL",
-          "label": "Whether to enable NoSQL logical database",
-          "type": "bool",
-          "value": true
-        },
-        {
           "name": "NOSQL_TYPE",
           "label": "Physical database type",
           "type": "string",
@@ -146,12 +100,6 @@
           "label": "Database port number",
           "type": "int",
           "value": 27017
-        },
-        {
-          "name": "BLOBS_DBMS",
-          "label": "Store blobs in database",
-          "type": "bool",
-          "value": true
         },
         {
           "name": "BLOBS_REUSE",
@@ -190,12 +138,6 @@
           "value": "new_company"
         },
         {
-          "name": "ENABLE_AGGREGATIONS",
-          "label": "Enable data aggregation based om timestamp / column",
-          "type": "bool",
-          "value": true
-        },
-        {
           "name": "AGGREGATION_TIME_COLUMN",
           "label": "Timestamp column to aggregate against",
           "type": "string",
@@ -206,12 +148,6 @@
           "label": "Value column to aggregate against",
           "type": "string",
           "value": "value"
-        },
-        {
-          "name": "ENABLE_MQTT",
-          "label": "Whether to enable the default MQTT process",
-          "type": "bool",
-          "value": true
         },
         {
           "name": "MQTT_BROKER",
@@ -236,12 +172,6 @@
           "label": "Password associated with MQTT user",
           "type": "string",
           "value": "mqtt4AnyLog!"
-        },
-        {
-          "name": "MQTT_LOG",
-          "label": "Whether to enable MQTT logging process",
-          "type": "bool",
-          "value": true
         },
         {
           "name": "MSG_TOPIC",
@@ -280,56 +210,8 @@
           "value": "float"
         },
         {
-          "name": "ENABLE_OPCUA",
-          "label": "Whether or not to enable to OPC-UA service",
-          "type": "bool",
-          "value": true
-        },
-        {
           "name": "MONITOR_NODES",
           "label": "Whether to monitor the node or not",
-          "type": "bool",
-          "value": true
-        },
-        {
-          "name": "STORE_MONITORING",
-          "label": "Store monitoring in Operator node(s)",
-          "type": "bool",
-          "value": true
-        },
-        {
-          "name": "SYSLOG_MONITORING",
-          "label": "For operator, accept syslog data from local (Message broker required)",
-          "type": "bool",
-          "value": true
-        },
-        {
-          "name": "DEPLOY_LOCAL_SCRIPT",
-          "label": "Whether to automatically run a local (or personalized) script at the end of the process",
-          "type": "bool",
-          "value": true
-        },
-        {
-          "name": "DEBUG_MODE",
-          "label": "Run code in debug mode",
-          "type": "bool",
-          "value": true
-        },
-        {
-          "name": "ENABLE_NEBULA",
-          "label": "whether to enable Lighthouse",
-          "type": "bool",
-          "value": true
-        },
-        {
-          "name": "NEBULA_NEW_KEYS",
-          "label": "create new nebula keys",
-          "type": "bool",
-          "value": true
-        },
-        {
-          "name": "IS_LIGHTHOUSE",
-          "label": "whether node is type lighthouse",
           "type": "bool",
           "value": true
         }

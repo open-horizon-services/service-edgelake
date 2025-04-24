@@ -112,30 +112,39 @@ publish-service: ## publish service
 	@echo "=================="
 	@echo "PUBLISHING SERVICE"
 	@echo "=================="
-	@hzn exchange service publish -O -P --json-file=service.definition.json
+	@#hzn exchange service publish -O -P --json-file=service.definition.json
+	@hzn exchange service publish --org=${HZN_ORG_ID} --user-pw=${HZN_EXCHANGE_USER_AUTH} -O -P --json-file=service.definition.json
 publish-service-policy: ##  public service policy
 	@echo "========================="
 	@echo "PUBLISHING SERVICE POLICY"
 	@echo "========================="
-	@hzn exchange service addpolicy -f service.policy.json $(HZN_ORG_ID)/$(SERVICE_NAME)_$(SERVICE_VERSION)_$(ARCH)
+	# @hzn exchange service addpolicy -f service.policy.json $(HZN_ORG_ID)/$(SERVICE_NAME)_$(SERVICE_VERSION)_$(ARCH)
+	@hzn exchange service addpolicy --org=${HZN_ORG_ID} --user-pw=${HZN_EXCHANGE_USER_AUTH} -f service.policy.json $(HZN_ORG_ID)/$(SERVICE_NAME)_$(SERVICE_VERSION)_$(ARCH)
 publish-deployment-policy: prep-service ## publish deployment policy
 	@echo "============================"
 	@echo "PUBLISHING DEPLOYMENT POLICY"
 	@echo "============================"
-	@hzn exchange deployment addpolicy -f deployment.policy.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
+#	@hzn exchange deployment addpolicy -f deployment.policy.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
+	@hzn exchange deployment addpolicy --org=$(HZN_ORG_ID) --user-pw=$(HZN_EXCHANGE_USER_AUTH) -f service.deployment.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION
 agent-run: ## start agent
 	@echo "================"
 	@echo "REGISTERING NODE"
 	@echo "================"
-	@hzn register --policy=node.policy.json
+	@#hzn register --policy=node.policy.json
+	@hzn register --name=hzn-client --policy=node.policy.json
+	@watch $(MAKE) hzn-agreement-list #watch agreement list
 hzn-clean: ## unregister agent(s) from OpenHorizon
 	@echo "==================="
 	@echo "UN-REGISTERING NODE"
 	@echo "==================="
 	@hzn unregister -f
 	@echo ""
+hzn-agreement-list: ## check agreement list
+	@hzn agreement list
 hzn-logs: ## logs for Docker container when running in OpenHorizon
 	@$(CONTAINER_CMD) logs $(CONTAINER_ID)
+deploy-check: ## check deployment
+	@hzn deploycheck all -t device -B service.deployment.json --service=service.definition.json --service-pol=service.policy.json --node-pol=node.policy.json
 
 #======================================================================================================================#
 #  											Testing / Help related commands											   #
