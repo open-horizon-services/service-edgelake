@@ -124,15 +124,15 @@ publish-deployment-policy: prep-service ## publish deployment policy
 	@echo "============================"
 	@echo "PUBLISHING DEPLOYMENT POLICY"
 	@echo "============================"
-#	@hzn exchange deployment addpolicy -f deployment.policy.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
-	@hzn exchange deployment addpolicy --org=$(HZN_ORG_ID) --user-pw=$(HZN_EXCHANGE_USER_AUTH) -f service.deployment.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION
+	# @hzn exchange deployment addpolicy -f deployment.policy.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
+	@hzn exchange deployment addpolicy --org=$(HZN_ORG_ID) --user-pw=$(HZN_EXCHANGE_USER_AUTH) -f service.deployment.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
 agent-run: ## start agent
 	@echo "================"
 	@echo "REGISTERING NODE"
 	@echo "================"
 	@#hzn register --policy=node.policy.json
 	@hzn register --name=hzn-client --policy=node.policy.json
-	@watch $(MAKE) hzn-agreement-list #watch agreement list
+	@watch $(MAKE) hzn-agreement-list #w atch agreement list
 hzn-clean: ## unregister agent(s) from OpenHorizon
 	@echo "==================="
 	@echo "UN-REGISTERING NODE"
