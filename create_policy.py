@@ -11,31 +11,41 @@ except NameError:
 ROOT_DIR = os.path.expanduser(os.path.expandvars(__file__)).split("create_policy.py")[0]
 FILE_PATH = os.path.join(ROOT_DIR, 'deployment.policy.json')
 BASE_POLICY = {
-    "label": "${SERVICE_NAME} Deployment Policy",
-    "description": "Policy to auto deploy ${SERVICE_NAME}",
-    "service": {
-        "name": "${SERVICE_NAME}",
-        "org": "${HZN_ORG_ID}",
-        "arch": "*",
-        "serviceVersions": [{
-            "version": "",
-            "priority": {
-                "priority_value": 1,
-                "retries": 2,
-                "retry_durations": 1800
-            }
-        }]
-    },
-    "properties": [],
-    "constraints": [
-         "purpose == edgelake",
-         "openhorizon.allowPrivileged == true"
-    ],
-    "userInput": [{
-        "serviceOrgid": "${HZN_ORG_ID}",
-        "serviceUrl": "${SERVICE_NAME}",
-        "serviceVersionRange": "[0.0.0,INFINITY)",
-        "inputs": []
+  "label": "${SERVICE_NAME} Deployment Policy",
+  "description": "Policy to auto deploy ${SERVICE_NAME}",
+  "service": {
+    "name": "${SERVICE_NAME}",
+    "org": "${HZN_ORG_ID}",
+    "arch": "*",
+    "serviceVersions": [
+      {
+        "version": "latest",
+        "priority": {
+          "priority_value": 1,
+          "retries": 2,
+          "retry_durations": 1800
+        }
+      },
+      {
+        "version": "1.3.0",
+        "priority": {
+          "priority_value": 2,
+          "retries": 2,
+          "retry_durations": 1800
+        }
+      }
+    ]
+  },
+  "properties": [],
+  "constraints": [
+    "purpose == edgelake",
+    "openhorizon.allowPrivileged == true"
+  ],
+  "userInput": [{
+      "serviceOrgid": "${HZN_ORG_ID}",
+      "serviceUrl": "${SERVICE_NAME}",
+      "serviceVersionRange": "[0.0.0,INFINITY)",
+      "inputs": []
     }]
 }
 IGNORE_LIST = ["REMOTE_CLI", "ENABLE_NEBULA", "NEBULA_NEW_KEYS", "IS_LIGHTHOUSE", "CIDR_OVERLAY_ADDRESS",

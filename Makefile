@@ -16,7 +16,7 @@ export OS := $(shell uname -s)
 # Conditional port override based on EDGELAKE_TYPE
 
 export DOCKER_IMAGE_VERSION := latest
-ARCH := $(shell uname -m)
+ARCH := $(shell hzn architecture)
 ifeq ($(ARCH),aarch64 arm64)
 	DOCKER_IMAGE_VERSION := latest-arm64
 endif
@@ -44,7 +44,7 @@ export CONTAINER_CMD := $(shell if command -v podman >/dev/null 2>&1; then echo 
 export DOCKER_COMPOSE_CMD := $(shell if command -v podman-compose >/dev/null 2>&1; then echo "podman-compose"; \
 	elif command -v docker-compose >/dev/null 2>&1; then echo "docker-compose"; else echo "docker compose"; fi)
 
-export PYTHON_CMD := $(shell if command -v python3 >/dev/null 2>&1; then echo "python"; \
+export PYTHON_CMD := $(shell if command -v python >/dev/null 2>&1; then echo "python"; \
 	elif command -v python3 >/dev/null 2>&1; then echo "python3"; fi)
 
 all: help
