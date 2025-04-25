@@ -103,7 +103,7 @@ logs: ## View container logs
 #  										   OpenHorizon related commands											   	   #
 #======================================================================================================================#
 prep-service: ## prepare `service.deployment.json` file using python / python3
-	@$(PYTHON_CMD) create_policy.py $(DOCKER_IMAGE_BASE) docker-makefiles/edgelake_${EDGELAKE_TYPE}.env
+	@$(PYTHON_CMD) create_policy.py $(DOCKER_IMAGE_VERSION) docker-makefiles/edgelake_${EDGELAKE_TYPE}.env
 full-deploy: publish-service publish-service-policy  publish-deployment-policy agent-run ## deploy all services and policies, then start agent
 deploy: publish-deployment-policy agent-run ## publish deployment and run agent
 publish: publish-service publish-service-policy publish-deployment-policy ## publish services and policies
