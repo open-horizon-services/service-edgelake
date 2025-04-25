@@ -12,6 +12,7 @@ ROOT_DIR = os.path.dirname(os.path.expanduser(os.path.expandvars(__file__)))
 FILE_PATH = os.path.join(ROOT_DIR, 'service.deployment.json')
 IGNORE_LIST = ["REMOTE_CLI", "ENABLE_NEBULA", "NEBULA_NEW_KEYS", "IS_LIGHTHOUSE", "CIDR_OVERLAY_ADDRESS",
                "LIGHTHOUSE_IP", "LIGHTHOUSE_NODE_IP"]
+IS_BASE = True
 BASE_POLICY = {
   "label": "${SERVICE_NAME} Deployment Policy",
   "description": "Policy to auto deploy ${SERVICE_NAME}",
@@ -20,14 +21,6 @@ BASE_POLICY = {
     "org": "${HZN_ORG_ID}",
     "arch": "*",
     "serviceVersions": [
-      {
-        "version": "latest",
-        "priority": {
-          "priority_value": 1,
-          "retries": 2,
-          "retry_durations": 1800
-        }
-      },
       {
         "version": "${SERVICE_VERSION}",
         "priority": {
@@ -60,6 +53,8 @@ if os.path.isfile(FILE_PATH):
             BASE_POLICY = json.load(f)
     except:
         pass
+    else:
+        IS_BASE = False
 
 
 def read_file(file_path):
@@ -134,11 +129,13 @@ def main():
       -h, --help   show this help message and exit
     :global:
         BASE_POLICY:dict - Base policy for generating deployment.policy.json
+        IS_BASE:bool - if service.deployment.json use that as your base, and do not update version
         FILE_PATH:str - full path for deployment.policy.json
     :params:
         full_path:str - full path for config file
     """
     global BASE_POLICY
+    global IS_BASE
     parse = argparse.ArgumentParser()
     parse.add_argument('version', type=str, default="latest", help="EdgeLake version")
     parse.add_argument('config_file', type=str, default=None, help='config file')
@@ -148,7 +145,8 @@ def main():
     if not os.path.isfile(full_path):
         raise FileNotFoundError(full_path)
 
-    BASE_POLICY['service']['serviceVersions'][0]['version'] = args.version
+    if IS_BASE is True:
+        BASE_POLICY['service']['serviceVersions'][0]['version'] = args.version
     BASE_POLICY['userInput'][0]['inputs'] = read_file(file_path=full_path)
 
     with open(FILE_PATH, 'w') as fname:
