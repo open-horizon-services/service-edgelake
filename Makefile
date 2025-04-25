@@ -15,10 +15,10 @@ export OS := $(shell uname -s)
 
 # Conditional port override based on EDGELAKE_TYPE
 
-export DOCKER_IMAGE_VERSION := 1.3.2501
+export DOCKER_IMAGE_VERSION := 1.3.2504
 ARCH := $(shell hzn architecture)
 ifeq ($(ARCH),aarch64 arm64)
-	DOCKER_IMAGE_VERSION := 1.3.2501-arm64
+	DOCKER_IMAGE_VERSION := 1.3.2504-arm64
 endif
 ifneq ($(filter test-node test-network,$(MAKECMDGOALS)),test-node test-network)
 	export NODE_NAME := $(shell cat docker-makefiles/edgelake_${EDGELAKE_TYPE}.env | grep NODE_NAME | awk -F "=" '{print $$2}'| sed 's/ /-/g' | tr '[:upper:]' '[:lower:]')
@@ -102,7 +102,7 @@ logs: ## View container logs
 #  										   OpenHorizon related commands											   	   #
 #======================================================================================================================#
 prep-service: ## prepare `service.deployment.json` file using python / python3
-	@$(PYTHON_CMD) create_policy.py $(DOCKER_IMAGE_VERSION) docker-makefiles/edgelake_${EDGELAKE_TYPE}.env
+	@$(PYTHON_CMD) create_policy.py $(SERVICE_VERSION) docker-makefiles/edgelake_${EDGELAKE_TYPE}.env
 full-deploy: publish-service publish-service-policy  publish-deployment-policy agent-run ## deploy all services and policies, then start agent
 deploy: publish-deployment-policy agent-run ## publish deployment and run agent
 publish: publish-service publish-service-policy publish-deployment-policy ## publish services and policies
