@@ -15,10 +15,10 @@ export OS := $(shell uname -s)
 
 # Conditional port override based on EDGELAKE_TYPE
 
-export DOCKER_IMAGE_VERSION := latest
+export DOCKER_IMAGE_VERSION := 1.3.2501
 ARCH := $(shell hzn architecture)
 ifeq ($(ARCH),aarch64 arm64)
-	DOCKER_IMAGE_VERSION := latest-arm64
+	DOCKER_IMAGE_VERSION := 1.3.2501-arm64
 endif
 ifneq ($(filter test-node test-network,$(MAKECMDGOALS)),test-node test-network)
 	export NODE_NAME := $(shell cat docker-makefiles/edgelake_${EDGELAKE_TYPE}.env | grep NODE_NAME | awk -F "=" '{print $$2}'| sed 's/ /-/g' | tr '[:upper:]' '[:lower:]')
@@ -170,7 +170,7 @@ check-vars: ## Show all environment variable values
 	@echo "EDGELAKE_TYPE          default: generic                               actual: $(EDGELAKE_TYPE)"
 	@echo "DOCKER_IMAGE_BASE      default: anylogco/edgelake                     actual: $(DOCKER_IMAGE_BASE)"
 	@echo "DOCKER_IMAGE_NAME      default: edgelake                              actual: $(IMAGE_NAME)"
-	@echo "DOCKER_IMAGE_VERSION   default: latest                                actual: $(DOCKER_IMAGE_VERSION)"
+	@echo "DOCKER_IMAGE_VERSION   default: 1.3.2504                                actual: $(DOCKER_IMAGE_VERSION)"
 	@echo "DOCKER_HUB_ID          default: anylogco                              actual: $(IMAGE_ORG)"
 	@echo "HZN_ORG_ID             default: myorg                                 actual: ${HZN_ORG_ID}"
 	@echo "HZN_LISTEN_IP          default: 127.0.0.1                             actual: ${HZN_LISTEN_IP}"
@@ -182,7 +182,7 @@ check-vars: ## Show all environment variable values
 	@echo "==================="
 	@echo "EDGELAKE_TYPE         Default: generic            Value: $(EDGELAKE_TYPE)"
 	@echo "NODE_NAME             Default: edgelake-node      Value: $(NODE_NAME)"
-	@echo "DOCKER_IMAGE_VERSION  Default: latest             Value: $(DOCKER_IMAGE_VERSION)"
+	@echo "DOCKER_IMAGE_VERSION  Default: 1.3.2504             Value: $(DOCKER_IMAGE_VERSION)"
 	@echo "ANYLOG_SERVER_PORT    Default: 32548              Value: $(ANYLOG_SERVER_PORT)"
 	@echo "ANYLOG_REST_PORT      Default: 32549              Value: $(ANYLOG_REST_PORT)"
 	@echo "ANYLOG_BROKER_PORT    Default:                    Value: $(ANYLOG_BROKER_PORT)"
