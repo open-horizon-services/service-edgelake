@@ -30,7 +30,6 @@ ifneq ($(filter test-node test-network,$(MAKECMDGOALS)),test-node test-network)
 	export DOCKER_IMAGE_BASE ?= $(shell cat docker-makefiles/.env | grep IMAGE | awk -F "=" '{print $$2}')
 	export IMAGE_ORG ?= $(shell echo $(DOCKER_IMAGE_BASE) |  cut -d '/' -f 1)
 	export IMAGE_NAME ?= $(shell echo $(DOCKER_IMAGE_BASE) |  cut -d '/' -f 2)
-
 endif
 
 ifeq ($(OS),Linux)
