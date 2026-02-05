@@ -1,9 +1,9 @@
 services:
   ${NODE_NAME}:
-    image: ${IMAGE}:${TAG}
+    image: ${DOCKER_IMAGE_BASE}:${DOCKER_IMAGE_VERSION}
     restart: always
     env_file:
-      - ../docker-makefiles/edgelake_${EDGELAKE_TYPE}.env
+      -  ../docker-makefiles/edgelake_${EDGELAKE_TYPE}.env
       - .env
     container_name: ${NODE_NAME}
     stdin_open: true

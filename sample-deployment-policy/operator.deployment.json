@@ -1,0 +1,213 @@
+{
+  "label": "${SERVICE_NAME} Deployment Policy",
+  "description": "Policy to auto deploy ${SERVICE_NAME}",
+  "service": {
+    "name": "${SERVICE_NAME}",
+    "org": "${HZN_ORG_ID}",
+    "arch": "*",
+    "serviceVersions": [
+      {
+        "version": "1.3.5",
+        "priority": {
+          "priority_value": 2,
+          "retries": 2,
+          "retry_durations": 1800
+        }
+      }
+    ]
+  },
+  "properties": [],
+  "constraints": [
+    "purpose == edgelake",
+    "openhorizon.allowPrivileged == true"
+  ],
+  "userInput": [
+    {
+      "serviceOrgid": "${HZN_ORG_ID}",
+      "serviceUrl": "${SERVICE_NAME}",
+      "serviceVersionRange": "[0.0.0,INFINITY)",
+      "inputs": [
+        {
+          "name": "NODE_TYPE",
+          "label": "EdgeLake starts TCP and REST connection protocols",
+          "type": "string",
+          "value": "operator"
+        },
+        {
+          "name": "NODE_NAME",
+          "label": "Name of the EdgeLake instance",
+          "type": "string",
+          "value": "edgelake-operator1"
+        },
+        {
+          "name": "COMPANY_NAME",
+          "label": "Owner of the EdgeLake instance",
+          "type": "string",
+          "value": "New Company"
+        },
+        {
+          "name": "ANYLOG_SERVER_PORT",
+          "label": "Port address used by EdgeLake's TCP protocol to communicate with other nodes in the network",
+          "type": "int",
+          "value": 32148
+        },
+        {
+          "name": "ANYLOG_REST_PORT",
+          "label": "Port address used by EdgeLake's REST protocol",
+          "type": "int",
+          "value": 32149
+        },
+        {
+          "name": "DB_TYPE",
+          "label": "Physical database type (sqlite or psql)",
+          "type": "string",
+          "value": "sqlite"
+        },
+        {
+          "name": "DB_IP",
+          "label": "Database IP address",
+          "type": "string",
+          "value": "127.0.0.1"
+        },
+        {
+          "name": "DB_PORT",
+          "label": "Database port number",
+          "type": "int",
+          "value": 5432
+        },
+        {
+          "name": "NOSQL_TYPE",
+          "label": "Physical database type",
+          "type": "string",
+          "value": "mongo"
+        },
+        {
+          "name": "NOSQL_IP",
+          "label": "Database IP address",
+          "type": "string",
+          "value": "127.0.0.1"
+        },
+        {
+          "name": "NOSQL_PORT",
+          "label": "Database port number",
+          "type": "int",
+          "value": 27017
+        },
+        {
+          "name": "BLOBS_REUSE",
+          "label": "Whether (re)store a blob if already exists",
+          "type": "bool",
+          "value": true
+        },
+        {
+          "name": "BLOCKCHAIN_SYNC",
+          "label": "How often to sync from blockchain",
+          "type": "string",
+          "value": "30 second"
+        },
+        {
+          "name": "BLOCKCHAIN_SOURCE",
+          "label": "blockchain network to be used (ex. optimism)",
+          "type": "string",
+          "value": "master"
+        },
+        {
+          "name": "LEDGER_CONN",
+          "label": "TCP connection information for Master Node",
+          "type": "string",
+          "value": "127.0.0.1:32048"
+        },
+        {
+          "name": "CLUSTER_NAME",
+          "label": "Owner of the cluster",
+          "type": "string",
+          "value": "new-cluster"
+        },
+        {
+          "name": "DEFAULT_DBMS",
+          "label": "Logical database name",
+          "type": "string",
+          "value": "new_company"
+        },
+        {
+          "name": "AGGREGATION_TIME_COLUMN",
+          "label": "Timestamp column to aggregate against",
+          "type": "string",
+          "value": "insert_timestamp"
+        },
+        {
+          "name": "AGGREGATION_VALUE_COLUMN",
+          "label": "Value column to aggregate against",
+          "type": "string",
+          "value": "value"
+        },
+        {
+          "name": "MQTT_BROKER",
+          "label": "IP address of MQTT broker",
+          "type": "string",
+          "value": "139.144.46.246"
+        },
+        {
+          "name": "MQTT_PORT",
+          "label": "Port associated with MQTT broker",
+          "type": "int",
+          "value": 1883
+        },
+        {
+          "name": "MQTT_USER",
+          "label": "User associated with MQTT broker",
+          "type": "string",
+          "value": "anyloguser"
+        },
+        {
+          "name": "MQTT_PASSWD",
+          "label": "Password associated with MQTT user",
+          "type": "string",
+          "value": "mqtt4AnyLog!"
+        },
+        {
+          "name": "MSG_TOPIC",
+          "label": "Topic to get data for",
+          "type": "string",
+          "value": "anylog-demo"
+        },
+        {
+          "name": "MSG_DBMS",
+          "label": "Logical database name",
+          "type": "string",
+          "value": "new_company"
+        },
+        {
+          "name": "MSG_TABLE",
+          "label": "Table where to store data",
+          "type": "string",
+          "value": "bring [table]"
+        },
+        {
+          "name": "MSG_TIMESTAMP_COLUMN",
+          "label": "Timestamp column name",
+          "type": "string",
+          "value": "now"
+        },
+        {
+          "name": "MSG_VALUE_COLUMN",
+          "label": "Value column name",
+          "type": "string",
+          "value": "bring [value]"
+        },
+        {
+          "name": "MSG_VALUE_COLUMN_TYPE",
+          "label": "Column value type",
+          "type": "string",
+          "value": "float"
+        },
+        {
+          "name": "MONITOR_NODES",
+          "label": "Whether to monitor the node or not",
+          "type": "bool",
+          "value": true
+        }
+      ]
+    }
+  ]
+}
